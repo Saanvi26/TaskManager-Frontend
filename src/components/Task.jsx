@@ -120,7 +120,24 @@ const Task = () => {
   };
 
   const deleteTask= async(id) => {
-    
+    try{
+      const response = await fetch(`/user/deleteSubTodo/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const responseData = await response.json();
+      const updatedSubTodoCard = subTodoCard.filter((subTodoCard) => subTodoCard._id !== id); 
+      setSubTodoCard(updatedSubTodoCard);
+      console.log(responseData);
+    }
+    catch(error){
+      console.error(error);
+    }
   }
 
   return (
@@ -175,7 +192,7 @@ const Task = () => {
             />
             <div className="flex flex-row justify-evenly" >
             <button className="border p-2 hover:bg-green-700" onClick={() => strikeTask(subTodoCard._id)}>{subTodoCard.isCompleted ? 'UNDONE' : 'DONE'}</button>
-            <button className="border p-2 hover:bg-red-700">DELETE</button>
+            <button className="border p-2 hover:bg-red-700" onClick={()=>deleteTask(subTodoCard._id)}>DELETE</button>
             </div>
           </div>
         ))}
